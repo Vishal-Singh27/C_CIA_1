@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Ebook: Conditionals - Your Unique Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Color Palette (Retained from previous version) */
+        :root {
+            --bg-dark: #1A1A2E; /* Deep Blue/Purple */
+            --text-light: #E0E0E0; /* Light Grey */
+            --heading-color: #0F4C75; /* Dark Teal */
+            --accent-color: #3282B8; /* Medium Blue */
+            --highlight-color: #BBE1FA; /* Light Blue */
+            --border-color: #0F4C75;
+            --card-bg: #2C2C40; /* Slightly lighter dark */
+            --button-hover: #4A90D9;
+            --disabled-color: #555;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--heading-color);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        header h1 {
+            color: var(--highlight-color);
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 2rem 1rem;
+            max-width: 900px; /* Adjusted max-width for better page feel */
+            margin: 0 auto;
+            display: flex; /* Use flexbox for page management */
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            /* Modified for transitions */
+            opacity: 0; /* Start hidden for fade-in */
+            transform: translateY(20px); /* Start slightly below for slide-up effect */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Smooth transition */
+            display: none; /* Hidden by default, controlled by JS */
+            min-height: 400px; /* Ensure pages have a consistent minimum height */
+            box-sizing: border-box; /* Include padding in width */
+            position: relative; /* For page number positioning */
+        }
+
+        .page-content.active {
+            opacity: 1; /* Fade in */
+            transform: translateY(0); /* Slide up to original position */
+            display: block; /* Show active page */
+        }
+
+        /* Add a class for fading out */
+        .page-content.fade-out {
+            opacity: 0;
+            transform: translateY(-20px); /* Slide up slightly during fade-out */
+        }
+
+
+        .page-number {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            color: var(--highlight-color);
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        h2 {
+            color: var(--accent-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 0;
+            border-bottom: 2px solid var(--heading-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            color: var(--highlight-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        ul {
+            list-style: disc;
+            margin-left: 20px;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        code {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--highlight-color);
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background-color: rgba(0, 0, 0, 0.4);
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--accent-color);
+        }
+
+        pre code {
+            display: block;
+            padding: 0;
+            background: none;
+            color: var(--highlight-color);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 1.5rem;
+            gap: 15px; /* Added gap for spacing between buttons */
+        }
+
+        .navigation-buttons button {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            flex-grow: 1; /* Allow buttons to grow */
+            max-width: 200px; /* Max width for buttons */
+        }
+
+        .navigation-buttons button:hover:not(:disabled) {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .navigation-buttons button:disabled {
+            background-color: var(--disabled-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+            box-shadow: none;
+        }
+
+        /* Canvas Specific Styles (Retained) */
+        .canvas-container {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        canvas {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            display: block;
+            margin: 1rem auto;
+            max-width: 100%;
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        .canvas-controls {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .canvas-controls input {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-color);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .canvas-controls button {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .canvas-controls button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Table of Contents specific styling */
+        #toc-page ul {
+            list-style: none; /* Remove default bullet points */
+            padding: 0;
+        }
+
+        #toc-page li {
+            margin-bottom: 10px;
+        }
+
+        #toc-page li a {
+            color: var(--highlight-color);
+            text-decoration: none;
+            font-size: 1.1em;
+            display: block; /* Make the whole area clickable */
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #toc-page li a:hover {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+        }
+
+        footer {
+            background-color: var(--heading-color);
+            color: var(--highlight-color);
+            text-align: center;
+            padding: 1.5rem 1rem;
+            margin-top: 2rem;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            main {
+                padding: 1.5rem 0.8rem;
+            }
+            .page-content {
+                padding: 1.5rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            .navigation-buttons button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+            .navigation-buttons {
+                flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+                justify-content: center;
+            }
+            .navigation-buttons button {
+                max-width: none; /* Remove max-width for full width on small screens */
+                width: 100%; /* Take full width */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>C Ebook: Conditionals</h1>
+        <p>Mastering Decision Making in C Programming</p>
+    </header>
+
+    <main>
+        <div id="home-page" class="page-content active">
+            <h2 style="text-align: center;">Welcome to C Ebook: Conditionals</h2>
+            <p style="text-align: center; font-size: 1.2em; margin-bottom: 2rem;">A Comprehensive Guide to Decision Making in C</p>
+            <p style="text-align: center; font-style: italic;">Authored by: Vishal Singh</p>
+
+            <h3>Preface</h3>
+            <p>This digital book is designed to be your essential companion for understanding and mastering conditional statements in the C programming language. Conditionals are the bedrock of creating dynamic and intelligent programs, allowing them to make decisions and adapt their behavior based on various inputs and conditions.</p>
+            <p>Whether you are a beginner taking your first steps into programming or looking to solidify your understanding of C's control flow mechanisms, this ebook provides clear explanations, practical examples, and an interactive element to enhance your learning experience.</p>
+            <p>We will explore everything from the basic <code>if</code> statement to more complex structures like <code>switch</code> and logical operators. Each concept is presented with straightforward code examples to help you grasp the syntax and logic quickly. Happy coding!</p>
+            <span class="page-number">Page 1 of 13</span>
+        </div>
+
+        <div id="toc-page" class="page-content">
+            <h2>Table of Contents</h2>
+            <ul id="toc-list">
+                <li><a href="#home-page">Home / Preface</a></li>
+                <li><a href="#intro-section">1. Introduction to Conditionals</a></li>
+                <li><a href="#if-section">2. The `if` Statement</a></li>
+                <li><a href="#if-else-section">3. The `if-else` Statement</a></li>
+                <li><a href="#if-else-if-section">4. The `if-else if-else` Ladder</a></li>
+                <li><a href="#nested-if-section">5. Nested `if` Statements</a></li>
+                <li><a href="#switch-section">6. The `switch` Statement</a></li>
+                <li><a href="#ternary-section">7. Ternary Operator (`?:`)</a></li>
+                <li><a href="#logical-section">8. Logical Operators (`&&`, `||`, `!`)</a></li>
+                <li><a href="#conclusion-section">9. Conclusion: Mastering Conditionals</a></li>
+                <li><a href="#canvas-section">10. Interactive Memory Visualizer</a></li>
+                <li><a href="#references-section">References</a></li>
+            </ul>
+            <span class="page-number">Page 2 of 13</span>
+        </div>
+
+        <div id="intro-section" class="page-content">
+            <h2>1. Introduction to Conditionals</h2>
+            <p>In programming, just like in real life, we often need to make decisions. Conditional statements in C allow your program to execute different blocks of code based on whether a specified condition is true or false. They are fundamental for creating dynamic and interactive programs.</p>
+            <p>Think of it like a fork in the road: if a certain condition is met, you take one path; otherwise, you take another. This unit will guide you through the various conditional statements available in C.</p>
+            <h3>Why are Conditionals Important?</h3>
+            <ul>
+                <li><strong>Decision Making:</strong> Allows programs to respond differently to various inputs or states.</li>
+                <li><strong>Flow Control:</strong> Directs the execution path of the program.</li>
+                <li><strong>Validation:</b> Used to check user input or system conditions.</li>
+                <li><strong>Error Handling:</strong> Helps in gracefully handling unexpected situations.</li>
+            </ul>
+            <span class="page-number">Page 3 of 13</span>
+        </div>
+
+        <div id="if-section" class="page-content">
+            <h2>2. The `if` Statement</h2>
+            <p>The <code>if</code> statement is the most basic conditional statement. It executes a block of code only if a specified condition is true.</p>
+            <h3>Syntax:</h3>
+            <pre><code>if (condition) {
+    // code to be executed if condition is true
+}</code></pre>
+            <ul>
+                <li><code>condition</code>: An expression that evaluates to either true (non-zero) or false (zero).</li>
+                <li>The curly braces <code>{}</code> define the block of code. If there's only one statement, braces are optional but recommended for clarity.</li>
+            </ul>
+            <h3>Example: Checking if a number is positive</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int num = 10;
+
+    if (num > 0) {
+        printf("The number is positive.\n");
+    }
+
+    num = -5;
+    if (num > 0) {
+        printf("This will not be printed.\n");
+    }
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>The number is positive.</code></p>
+            <span class="page-number">Page 4 of 13</span>
+        </div>
+
+        <div id="if-else-section" class="page-content">
+            <h2>3. The `if-else` Statement</h2>
+            <p>The <code>if-else</code> statement allows you to execute one block of code if the condition is true, and another block if the condition is false.</p>
+            <h3>Syntax:</h3>
+            <pre><code>if (condition) {
+    // code to be executed if condition is true
+} else {
+    // code to be executed if condition is false
+}</code></pre>
+            <h3>Example: Checking if a number is even or odd</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int num = 7;
+
+    if (num % 2 == 0) {
+        printf("%d is an even number.\n", num);
+    } else {
+        printf("%d is an odd number.\n", num);
+    }
+
+    num = 12;
+    if (num % 2 == 0) {
+        printf("%d is an even number.\n", num);
+    } else {
+        printf("%d is an odd number.\n", num);
+    }
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>7 is an odd number.</code><br>
+            <code>12 is an even number.</code></p>
+            <span class="page-number">Page 5 of 13</span>
+        </div>
+
+        <div id="if-else-if-section" class="page-content">
+            <h2>4. The `if-else if-else` Ladder</h2>
+            <p>When you have multiple conditions to check sequentially, the <code>if-else if-else</code> ladder (also known as `else if` ladder) is used. It allows you to test a series of conditions.</p>
+            <h3>Syntax:</h3>
+            <pre><code>if (condition1) {
+    // code if condition1 is true
+} else if (condition2) {
+    // code if condition1 is false AND condition2 is true
+} else if (condition3) {
+    // code if condition1 & condition2 are false AND condition3 is true
+} else {
+    // code if all conditions are false
+}</code></pre>
+            <h3>Example: Grading system</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int score = 75;
+    char grade;
+
+    if (score >= 90) {
+        grade = 'A';
+    } else if (score >= 80) {
+        grade = 'B';
+    } else if (score >= 70) {
+        grade = 'C';
+    } else if (score >= 60) {
+        grade = 'D';
+    } else {
+        grade = 'F';
+    }
+
+    printf("Your grade is: %c\n", grade);
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>Your grade is: C</code></p>
+            <span class="page-number">Page 6 of 13</span>
+        </div>
+
+        <div id="nested-if-section" class="page-content">
+            <h2>5. Nested `if` Statements</h2>
+            <p>You can place an <code>if</code> or <code>if-else</code> statement inside another <code>if</code> or <code>else</code> block. This is called nesting. Nested conditionals are useful when you need to check multiple layers of conditions.</p>
+            <h3>Example: Checking eligibility for a discount</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int age = 25;
+    int hasMembership = 1; // 1 for true, 0 for false
+
+    if (age >= 18) {
+        printf("Eligible to enter.\n");
+        if (hasMembership == 1) {
+            printf("You get a 10%% discount!\n");
+        } else {
+            printf("No membership discount.\n");
+        }
+    } else {
+        printf("Not eligible to enter.\n");
+    }
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>Eligible to enter.</code><br>
+            <code>You get a 10% discount!</code></p>
+            <p>While powerful, excessive nesting can make code harder to read and maintain. Consider using logical operators (`&&`, `||`) or restructuring your logic for complex conditions.</p>
+            <span class="page-number">Page 7 of 13</span>
+        </div>
+
+        <div id="switch-section" class="page-content">
+            <h2>6. The `switch` Statement</h2>
+            <p>The <code>switch</code> statement is an alternative to a long <code>if-else if-else</code> ladder when you need to compare a single variable against multiple constant values.</p>
+            <h3>Syntax:</h3>
+            <pre><code>switch (expression) {
+    case constant1:
+        // code to execute if expression == constant1
+        break;
+    case constant2:
+        // code to execute if expression == constant2
+        break;
+    // ... more cases
+    default:
+        // code to execute if no case matches
+}</code></pre>
+            <ul>
+                <li><code>expression</code>: An integer or character expression.</li>
+                <li><code>case</code>: Specifies a constant value to compare against the expression.</li>
+                <li><code>break</code>: Exits the <code>switch</code> statement. Without it, execution "falls through" to the next case.</li>
+                <li><code>default</code>: (Optional) Specifies code to execute if no case matches the expression.</li>
+            </ul>
+            <h3>Example: Day of the week</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int day = 3; // 1 for Monday, 2 for Tuesday, etc.
+
+    switch (day) {
+        case 1:
+            printf("It's Monday.\n");
+            break;
+        case 2:
+            printf("It's Tuesday.\n");
+            break;
+        case 3:
+            printf("It's Wednesday.\n");
+            break;
+        case 4:
+            printf("It's Thursday.\n");
+            break;
+        case 5:
+            printf("It's Friday.\n");
+            break;
+        default:
+            printf("It's a weekend day!\n");
+    }
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>It's Wednesday.</code></p>
+            <span class="page-number">Page 8 of 13</span>
+        </div>
+
+        <div id="ternary-section" class="page-content">
+            <h2>7. Ternary Operator (`?:`)</h2>
+            <p>The ternary operator (also known as the conditional operator) is a shorthand for a simple <code>if-else</code> statement. It's the only ternary operator in C (takes three operands).</p>
+            <h3>Syntax:</h3>
+            <pre><code>condition ? expression_if_true : expression_if_false;</code></pre>
+            <ul>
+                <li>If <code>condition</code> is true, <code>expression_if_true</code> is evaluated and its result is returned.</li>
+                <li>If <code>condition</code> is false, <code>expression_if_false</code> is evaluated and its result is returned.</li>
+            </ul>
+            <h3>Example: Finding the maximum of two numbers</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int a = 15;
+    int b = 20;
+    int max;
+
+    max = (a > b) ? a : b; // If a > b is true, max = a; else max = b;
+
+    printf("The maximum number is: %d\n", max);
+
+    int isAdult = (a >= 18) ? 1 : 0; // isAdult will be 0 (false)
+    printf("Is 'a' an adult? %d\n", isAdult); // Output: 0
+
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>The maximum number is: 20</code><br>
+            <code>Is 'a' an adult? 0</code></p>
+            <p>The ternary operator is often used for assigning values based on a condition or for concisely printing different outputs.</p>
+            <span class="page-number">Page 9 of 13</span>
+        </div>
+
+        <div id="logical-section" class="page-content">
+            <h2>8. Logical Operators (`&&`, `||`, `!`)</h2>
+            <p>Logical operators are used to combine or modify conditional expressions, allowing you to create more complex conditions.</p>
+            <h3>Operators:</h3>
+            <ul>
+                <li><code>&&</code> (Logical AND): Returns true if <strong>both</strong> operands are true.</li>
+                <li><code>||</code> (Logical OR): Returns true if <strong>at least one</strong> operand is true.</li>
+                <li><code>!</code> (Logical NOT): Reverses the logical state of its operand (true becomes false, false becomes true).</li>
+            </ul>
+            <h3>Example: Checking multiple conditions</h3>
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int age = 20;
+    int hasLicense = 1; // 1 for true, 0 for false
+    int isStudent = 0;
+
+    // Logical AND (&&)
+    if (age >= 18 && hasLicense == 1) {
+        printf("Eligible to drive.\n");
+    } else {
+        printf("Not eligible to drive.\n");
+    }
+
+    // Logical OR (||)
+    if (isStudent == 1 || age < 18) {
+        printf("Eligible for student/child discount.\n");
+    } else {
+        printf("Not eligible for student/child discount.\n");
+    }
+
+    // Logical NOT (!)
+    if (!(age > 25)) { // Equivalent to age <= 25
+        printf("Age is 25 or less.\n");
+    }
+    return 0;
+}</code></pre>
+            <p><strong>Output:</strong><br>
+            <code>Eligible to drive.</code><br>
+            <code>Not eligible for student/child discount.</code><br>
+            <code>Age is 25 or less.</code></p>
+            <span class="page-number">Page 10 of 13</span>
+        </div>
+
+        <div id="conclusion-section" class="page-content">
+            <h2>9. Conclusion: Mastering Conditionals</h2>
+            <p>Conditional statements are the backbone of decision-making in C programming. By understanding and effectively using <code>if</code>, <code>if-else</code>, <code>else if</code> ladders, <code>switch</code>, and the ternary operator, you can write programs that respond intelligently to various situations.</p>
+            <p>Remember to choose the most appropriate conditional structure for your specific needs:</p>
+            <ul>
+                <li>Use <code>if</code> for single conditions.</li>
+                <li>Use <code>if-else</code> for two mutually exclusive outcomes.</li>
+                <li>Use <code>if-else if-else</code> for multiple, sequential conditions.</li>
+                <li>Use <code>switch</code> for comparing a single variable against many discrete constant values.</li>
+                <li>Use the ternary operator for concise, simple conditional assignments or expressions.</li>
+            </ul>
+            <p>Practice is key! Experiment with these concepts by writing your own programs. This will solidify your understanding and make you proficient in controlling the flow of your C applications.</p>
+            <span class="page-number">Page 11 of 13</span>
+        </div>
+
+        <div id="canvas-section" class="page-content canvas-container">
+            <h2>10. Interactive Memory Visualizer</h2>
+            <p>Explore how variables occupy memory. Enter a variable name and value to see it "allocated" in a simulated memory block.</p>
+            <canvas id="memoryCanvas" width="600" height="300"></canvas>
+            <div class="canvas-controls">
+                <input type="text" id="varNameInput" placeholder="Variable Name (e.g., 'age')">
+                <input type="text" id="varValueInput" placeholder="Value (e.g., '42')">
+                <button id="allocateBtn">Allocate Variable</button>
+                <button id="resetCanvasBtn">Reset</button>
+            </div>
+            <p style="font-size: 0.9em; margin-top: 1rem; color: var(--highlight-color);">
+                <em>(This is a simplified visual representation for demonstration purposes.)</em>
+            </p>
+            <span class="page-number">Page 12 of 13</span>
+        </div>
+
+        <div id="references-section" class="page-content">
+            <h2>References</h2>
+            <p>This section lists the resources and materials consulted for the creation of this digital book. Proper citation is crucial for academic integrity and to acknowledge the work of others.</p>
+            <ul>
+                <li><strong>C Programming Language (2nd Edition)</strong> by Brian W. Kernighan and Dennis M. Ritchie. (The classic "K&R" book, foundational for C).</li>
+                <li><strong>GeeksforGeeks: C Language</strong> - A comprehensive online resource for C programming concepts and examples. (<code>https://www.geeksforgeeks.org/c-language-set-1/</code>)</li>
+                <li><strong>W3Schools: C Tutorial</strong> - Provides beginner-friendly tutorials and examples for C. (<code>https://www.w3schools.com/c/</code>)</li>
+                <li><strong>TutorialsPoint: C Programming</strong> - Offers detailed explanations and examples for various C topics. (<code>https://www.tutorialspoint.com/cprogramming/index.htm</code>)</li>
+                <li>Any specific course materials, lecture notes, or other academic sources you used.</li>
+            </ul>
+            <p><em>Please ensure to replace these example references with the actual sources you used for your assignment.</em></p>
+            <span class="page-number">Page 13 of 13</span>
+        </div>
+
+        <div class="navigation-buttons">
+            <button id="homeBtn">Home</button> <button id="prevBtn" disabled>Previous Page</button>
+            <button id="nextBtn">Next Page</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>This digital book is created for educational purposes.</p>
+    </footer>
+
+    <script>
+        const pages = document.querySelectorAll('.page-content');
+        const homeBtn = document.getElementById('homeBtn'); // Get the new Home button
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentPageIndex = 0;
+        const totalPages = pages.length; // Get total number of pages
+        const transitionDuration = 500; // Milliseconds for fade transition
+
+        // Function to show a specific page by its index
+        function showPage(index) {
+            if (index === currentPageIndex && pages[index].classList.contains('active')) {
+                // If trying to show the current active page, do nothing to avoid re-transitioning
+                return;
+            }
+
+            const currentPage = pages[currentPageIndex];
+            const nextPage = pages[index];
+
+            // If there's a current page, fade it out
+            if (currentPage && currentPage.classList.contains('active')) {
+                currentPage.classList.add('fade-out');
+                currentPage.classList.remove('active');
+                // Temporarily disable buttons during transition
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                homeBtn.disabled = true;
+
+                setTimeout(() => {
+                    currentPage.style.display = 'none'; // Hide after fade-out
+                    currentPage.classList.remove('fade-out'); // Clean up class
+
+                    // Show the new page
+                    nextPage.style.display = 'block';
+                    // Force reflow to ensure transition applies
+                    void nextPage.offsetWidth; 
+                    nextPage.classList.add('active');
+                    
+                    currentPageIndex = index;
+                    updateNavigationButtons();
+                    updatePageNumbers();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+                }, transitionDuration); // Wait for fade-out to complete
+            } else {
+                // If no current active page (e.g., initial load), just show the new page
+                nextPage.style.display = 'block';
+                // Force reflow to ensure transition applies
+                void nextPage.offsetWidth; 
+                nextPage.classList.add('active');
+                currentPageIndex = index;
+                updateNavigationButtons();
+                updatePageNumbers();
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+            }
+        }
+
+        // Function to update the state of navigation buttons (disabled/enabled)
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentPageIndex === 0;
+            nextBtn.disabled = currentPageIndex === totalPages - 1;
+            homeBtn.disabled = false; // Always enable home button
+        }
+
+        // Function to update the page number display on each page
+        function updatePageNumbers() {
+            pages.forEach((page, i) => {
+                const pageNumSpan = page.querySelector('.page-number');
+                if (pageNumSpan) {
+                    pageNumSpan.textContent = `Page ${i + 1} of ${totalPages}`;
+                }
+            });
+        }
+
+        // Event listener for the "Home" button
+        homeBtn.addEventListener('click', () => {
+            showPage(0); // Show the first page (Home)
+        });
+
+        // Event listener for the "Previous Page" button
+        prevBtn.addEventListener('click', () => {
+            if (currentPageIndex > 0) {
+                showPage(currentPageIndex - 1);
+            }
+        });
+
+        // Event listener for the "Next Page" button
+        nextBtn.addEventListener('click', () => {
+            if (currentPageIndex < totalPages - 1) {
+                showPage(currentPageIndex + 1);
+            }
+        });
+
+        // Function to navigate to a specific section by its ID (used by TOC)
+        function navigateToSection(sectionId) {
+            const targetPage = document.getElementById(sectionId);
+            if (targetPage) {
+                let index = -1;
+                // Find the index of the target page in the pages NodeList
+                for (let i = 0; i < pages.length; i++) {
+                    if (pages[i].id === sectionId) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index !== -1) {
+                    showPage(index); // Use showPage to trigger transition
+                }
+            }
+        }
+
+        // Event listener for the Table of Contents links
+        document.getElementById('toc-list').addEventListener('click', (event) => {
+            // Check if the clicked element is an anchor tag within the toc-list
+            if (event.target.tagName === 'A' && event.target.closest('#toc-list')) {
+                event.preventDefault(); // Prevent default anchor jump behavior
+                const targetId = event.target.getAttribute('href').substring(1); // Get the ID from href (remove '#')
+                navigateToSection(targetId); // Navigate to the corresponding section
+            }
+        });
+
+
+        // Initial page display and number update when the script loads
+        // We need to slightly adjust initial load to ensure transition works from page 0
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide all pages initially to prepare for the first fade-in
+            pages.forEach(page => {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            });
+            // Then show the first page with a fade-in effect
+            pages[0].style.display = 'block';
+            void pages[0].offsetWidth; // Trigger reflow
+            pages[0].classList.add('active');
+            updateNavigationButtons();
+            updatePageNumbers();
+        });
+
+
+        // JavaScript for Canvas Memory Visualizer (Retained and slightly adjusted for responsiveness)
+        const canvas = document.getElementById('memoryCanvas');
+        const ctx = canvas.getContext('2d');
+        const allocateBtn = document.getElementById('allocateBtn');
+        const resetCanvasBtn = document.getElementById('resetCanvasBtn');
+        const varNameInput = document.getElementById('varNameInput');
+        const varValueInput = document.getElementById('varValueInput');
+
+        let memoryBlocks = [];
+        const maxBlocks = 5; // Max variables to show
+
+        // Responsive Canvas Sizing
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            // Set canvas width to fill its container, minus some padding
+            canvas.width = container.clientWidth - 40;
+            // Maintain aspect ratio, or set a max height if desired
+            canvas.height = Math.min(300, canvas.width * 0.5); // Example: 0.5 aspect ratio, max 300px height
+            drawMemory();
+        }
+
+        window.addEventListener('resize', resizeCanvas); // Resize on window resize
+
+        // Call resizeCanvas on window load to set initial size
+        window.onload = function() {
+            resizeCanvas();
+        };
+
+        function drawMemory() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const blockCount = maxBlocks;
+            const padding = 10; // Padding between blocks and from canvas edge
+            const totalPaddingWidth = padding * (blockCount + 1);
+            const availableWidth = canvas.width - totalPaddingWidth;
+            const blockWidth = availableWidth / blockCount;
+            const blockHeight = canvas.height * 0.4; // Height relative to canvas height
+            const startY = canvas.height * 0.3; // Starting Y position for the blocks
+
+            // Draw memory labels
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-light');
+            ctx.font = '14px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText("Simulated Memory", canvas.width / 2, startY - 20);
+
+            // Draw memory blocks outlines
+            for (let i = 0; i < blockCount; i++) {
+                const x = padding + i * (blockWidth + padding);
+                ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, startY, blockWidth, blockHeight);
+
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--card-bg');
+                ctx.fillRect(x, startY, blockWidth, blockHeight);
+
+                // Draw block number/address below the block
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--highlight-color');
+                ctx.font = '12px Inter';
+                // Simulate memory addresses
+                ctx.fillText(`0x${(1000 + i * 16).toString(16).toUpperCase()}`, x + blockWidth / 2, startY + blockHeight + 20);
+            }
+
+            // Draw allocated variables inside their blocks
+            memoryBlocks.forEach((block, index) => {
+                if (index < blockCount) { // Ensure we don't draw beyond maxBlocks
+                    const x = padding + index * (blockWidth + padding);
+                    const textX = x + blockWidth / 2;
+                    const textY = startY + blockHeight / 2;
+
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--highlight-color');
+                    ctx.font = '16px Inter';
+                    ctx.fillText(`${block.name}: ${block.value}`, textX, textY);
+                }
+            });
+        }
+
+        function allocateVariable() {
+            const varName = varNameInput.value.trim();
+            const varValue = varValueInput.value.trim();
+
+            if (!varName || !varValue) {
+                // Using a simple alert for this demo, in a real app, use a custom modal
+                alert("Please enter both variable name and value.");
+                return;
+            }
+
+            if (memoryBlocks.length >= maxBlocks) {
+                // Using a simple alert for this demo, in a real app, use a custom modal
+                alert("Memory is full! Please reset to allocate more.");
+                return;
+            }
+
+            memoryBlocks.push({ name: varName, value: varValue });
+            drawMemory(); // Redraw canvas with new variable
+
+            varNameInput.value = ''; // Clear input fields
+            varValueInput.value = '';
+        }
+
+        function resetCanvas() {
+            memoryBlocks = []; // Clear all allocated blocks
+            drawMemory(); // Redraw canvas
+        }
+
+        // Event listeners for canvas controls
+        allocateBtn.addEventListener('click', allocateVariable);
+        resetCanvasBtn.addEventListener('click', resetCanvas);
+
+        // Initial draw of the canvas
+        // This will be called by window.onload, which now also calls resizeCanvas
+        // No need to call drawMemory() directly here
+    </script>
+</body>
+</html>
